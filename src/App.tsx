@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import AuthScreen from '@/screens/AuthScreen';
 import Layout, { ViewName } from '@/components/Layout';
@@ -12,7 +12,6 @@ import DocumentDetailModal from '@/components/DocumentDetailModal';
 import ShareModal from '@/components/ShareModal';
 import { Document } from '@/types';
 import { useDocuments } from '@/hooks/useDocuments';
-import { supabase } from '@/lib/supabase';
 import { Loader2 } from 'lucide-react';
 
 function AppContent() {
@@ -22,17 +21,6 @@ function AppContent() {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [shareDoc, setShareDoc] = useState<Document | null>(null);
   const { documents, loading: docsLoading } = useDocuments();
-
-  useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    if (hashParams.get('type') === 'oauth' || hashParams.get('access_token') || hashParams.get('error')) {
-      supabase.auth.exchangeCodeForSession(window.location.href).then(() => {
-        if (window.history.replaceState) {
-          window.history.replaceState({}, '', window.location.pathname);
-        }
-      });
-    }
-  }, []);
 
   if (loading) {
     return (
